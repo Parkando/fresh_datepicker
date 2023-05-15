@@ -1,3 +1,5 @@
+import { Calendar } from "./deps.ts";
+
 // deno-lint-ignore no-explicit-any
 function assertDate(value?: any): value is Date {
   return value && Object.prototype.toString.call(value) === "[object Date]" &&
@@ -26,4 +28,44 @@ export function parseDate(value?: string | Date): Date {
     }
   }
   return new Date();
+}
+
+export class State {
+  private calendar: ReturnType<typeof Calendar.createCalendar>;
+  private currentDate: Date;
+
+  constructor(year: number, month: number) {
+    this.currentDate = new Date(year, month, 1);
+    this.calendar = Calendar.createCalendar(this.currentDate.getFullYear());
+  }
+
+  next(): State {
+    this.currentDate.setMonth(this.currentDate.getMonth() + 1);
+    this.calendar = Calendar.createCalendar(this.currentDate.getFullYear());
+    return new State(
+      this.currentDate.getFullYear(),
+      this.currentDate.getMonth(),
+    );
+  }
+
+  prev(): State {
+    this.currentDate.setMonth(this.currentDate.getMonth() - 1);
+    this.calendar = Calendar.createCalendar(this.currentDate.getFullYear());
+    return new State(
+      this.currentDate.getFullYear(),
+      this.currentDate.getMonth(),
+    );
+  }
+
+  get year(): number {
+    return this.calendar[this.currentDate.getMonth()].year;
+  }
+
+  get month(): number {
+    return this.calendar[this.currentDate.getMonth()].month;
+  }
+
+  get current() {
+    return this.calendar[this.currentDate.getMonth()];
+  }
 }
