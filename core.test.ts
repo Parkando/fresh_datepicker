@@ -1,5 +1,5 @@
 import { assertEquals } from "std/testing/asserts.ts";
-import { parseDate } from "./core.ts";
+import { parseDate, State } from "./core.ts";
 
 Deno.test("core - parseDate", () => {
   const now = new Date();
@@ -13,4 +13,9 @@ Deno.test("core - parseDate", () => {
   for (const [s, d] of dates) {
     assertEquals(parseDate(s), d);
   }
+});
+
+Deno.test("core - State - days in month", () => {
+  const state = new State(2023, 2);
+  assertEquals(state.days.length, 28);
 });

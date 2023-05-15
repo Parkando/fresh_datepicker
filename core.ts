@@ -1,5 +1,3 @@
-import { Calendar } from "./deps.ts";
-
 // deno-lint-ignore no-explicit-any
 function assertDate(value?: any): value is Date {
   return value && Object.prototype.toString.call(value) === "[object Date]" &&
@@ -31,17 +29,14 @@ export function parseDate(value?: string | Date): Date {
 }
 
 export class State {
-  private calendar: ReturnType<typeof Calendar.createCalendar>;
   private currentDate: Date;
 
   constructor(year: number, month: number) {
     this.currentDate = new Date(year, month, 1);
-    this.calendar = Calendar.createCalendar(this.currentDate.getFullYear());
   }
 
   next(): State {
     this.currentDate.setMonth(this.currentDate.getMonth() + 1);
-    this.calendar = Calendar.createCalendar(this.currentDate.getFullYear());
     return new State(
       this.currentDate.getFullYear(),
       this.currentDate.getMonth(),
@@ -50,22 +45,26 @@ export class State {
 
   prev(): State {
     this.currentDate.setMonth(this.currentDate.getMonth() - 1);
-    this.calendar = Calendar.createCalendar(this.currentDate.getFullYear());
     return new State(
       this.currentDate.getFullYear(),
       this.currentDate.getMonth(),
     );
   }
 
+  monthName(locales: string | string[]): string {
+    return this.currentDate.toLocaleString(locales, { month: "short" });
+  }
+
   get year(): number {
-    return this.calendar[this.currentDate.getMonth()].year;
+    return this.currentDate.getFullYear();
   }
 
   get month(): number {
-    return this.calendar[this.currentDate.getMonth()].month;
+    return this.currentDate.getMonth();
   }
 
-  get current() {
-    return this.calendar[this.currentDate.getMonth()];
+  get days(): number[] {
+    const dt = new Date(this.year, this.month, 0);
+    return Array.from(Array(dt.getDate()).keys()).map((n) => n + 1);
   }
 }

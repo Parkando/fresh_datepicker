@@ -1,6 +1,6 @@
 import { IS_BROWSER } from "$fresh/runtime.ts";
 import { JSX } from "preact";
-import { parseDate, State } from "./core.ts";
+import { parseDate, State } from "@/core.ts";
 
 // TODO: Remove the Calendar dependency
 
@@ -106,7 +106,7 @@ export function Datepicker(
             {theme.icons?.left || <span>&larr;</span>}
           </button>
           <span class="flex-1 text-center self-center">
-            {state.current.monthName}
+            {state.monthName(locales)}
           </span>
           <button
             onClick={() => {
@@ -122,26 +122,24 @@ export function Datepicker(
           </button>
         </div>
         <ul class="inline-grid grid-cols-7 grid-flow-row gap-[2px] sm:gap-1">
-          {state.current.days.filter((d) => d.day !== null).map((d) => (
+          {state.days.map((d) => (
             <li
               class="grid items-center justify-center"
-              key={`${d.row}-${d.day}`}
+              key={d}
             >
               <button
                 disabled={!IS_BROWSER}
                 onClick={() => {
-                  if (typeof props.onSelect === "function" && d.day) {
+                  if (typeof props.onSelect === "function") {
                     const dt = parseDate(
-                      `${state.current.year}-${
-                        state.current.month + 1
-                      }-${d.day}`,
+                      `${state.year}-${state.month + 1}-${d}`,
                     );
                     props.onSelect(dt);
                   }
                 }}
-                class={dateClass(d.day)}
+                class={dateClass(d)}
               >
-                {d.day}
+                {d}
               </button>
             </li>
           ))}
