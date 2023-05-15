@@ -1,0 +1,18 @@
+name: fmt, lint & test
+
+on: push
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+      - uses: denoland/setup-deno@v1.1.1
+        with:
+          deno-version: v1.x # Run with latest stable Deno.
+      - name: fmt
+        run: deno fmt --check
+      - name: lint
+        run: deno lint
+      - name: test
+        run: deno test
