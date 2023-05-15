@@ -2,7 +2,10 @@ import { IS_BROWSER } from "$fresh/runtime.ts";
 import { JSX } from "preact";
 import { parseDate, State } from "@/core.ts";
 
-// TODO: Remove the Calendar dependency
+export type YearAndMonth = {
+  year: number;
+  month: number;
+};
 
 interface Theme {
   primary: string;
@@ -22,11 +25,11 @@ interface Props {
   locales?: string | string[] | undefined;
   open?: boolean;
   disabled?: boolean;
-  month?: number;
-  year?: number;
+  month: YearAndMonth["month"];
+  year?: YearAndMonth["year"];
   onOpen?(open: boolean): void;
   onSelect?(date: Date): void;
-  onMonthChange?(ym: { year: number; month: number }): void;
+  onMonthChange?(ym: YearAndMonth): void;
   theme?: Theme;
 }
 
