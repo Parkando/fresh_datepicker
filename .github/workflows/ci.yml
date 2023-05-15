@@ -1,4 +1,4 @@
-name: fmt, lint & test
+name: CI
 
 on: push
 
