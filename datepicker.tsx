@@ -25,7 +25,7 @@ interface Props {
   locales?: string | string[] | undefined;
   open?: boolean;
   disabled?: boolean;
-  month: YearAndMonth["month"];
+  month?: YearAndMonth["month"];
   year?: YearAndMonth["year"];
   onOpen?(open: boolean): void;
   onSelect?(date: Date): void;
