@@ -1,2 +1,2 @@
-export { Datepicker } from "./datepicker.tsx";
+export { Datepicker } from "@/datepicker.tsx";
 
