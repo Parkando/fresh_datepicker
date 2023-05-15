@@ -1,10 +1,21 @@
 import { IS_BROWSER } from "$fresh/runtime.ts";
 import { JSX } from "preact";
 import { parseDate, State } from "./core.ts";
-import { Chevron } from "./chevron.tsx";
 
-// TODO:
-//  1. Theming
+// TODO: Remove the Calendar dependency
+
+interface Theme {
+  primary: string;
+  accent: string;
+  boxShadow?: string;
+  borderRadius?: string;
+  icons?: {
+    up?: JSX.Element | string;
+    down?: JSX.Element | string;
+    left?: JSX.Element | string;
+    right?: JSX.Element | string;
+  };
+}
 
 interface Props {
   date?: Date | string;
@@ -16,10 +27,21 @@ interface Props {
   onOpen?(open: boolean): void;
   onSelect?(date: Date): void;
   onMonthChange?(ym: { year: number; month: number }): void;
+  theme?: Theme;
 }
 
 export function Datepicker(
-  { open, locales = "default", ...props }: Props,
+  {
+    open,
+    locales = "default",
+    theme = {
+      primary: "blue-400",
+      accent: "black",
+      boxShadow: "shadow-md shadow-[rgb(164, 189, 185)]",
+      borderRadius: "rounded-lg",
+    },
+    ...props
+  }: Props,
 ): JSX.Element {
   const date = parseDate(props.date);
 
@@ -30,19 +52,26 @@ export function Datepicker(
 
   const df = new Intl.DateTimeFormat(locales);
 
-  const chev = open
-    ? <Chevron svgProps={{ class: "w-6", role: "button" }} direction="up" />
-    : (
-      <Chevron
-        svgProps={{ class: "w-6", role: "button" }}
-        direction="down"
-      />
-    );
-
   function isSelected(day: number | null | undefined): boolean {
     return date.getMonth() === month && date.getFullYear() === year &&
       day === date.getDate();
   }
+
+  const buttonClass =
+    `flex items-center p-2 sm:p-4 text-sm md:text-xl flex justify-between focus:outline-none ${
+      theme.borderRadius || "rounded"
+    } ${theme.boxShadow || ""}`;
+
+  const pickerClass = `p-2 absolute top-[3rem] sm:top-[4.5rem]${
+    !open ? " hidden" : ""
+  } ${theme.boxShadow || ""} ${theme.borderRadius || ""}`;
+
+  const dateClass = (day: number | null | undefined) =>
+    `w-8 h-8 sm:w-[3rem] sm:h-[3rem] transition-all text-sm rounded focus:outline-none hover:bg-${
+      theme.primary || "black"
+    } hover:text-white ${
+      isSelected(day) ? ` bg-${theme.primary || "black"} text-white` : ""
+    } ${theme.boxShadow || ""}`;
 
   return (
     <div class="inline-grid gap-1 min-w-[236px] sm:min-w-[360px] relative">
@@ -53,16 +82,18 @@ export function Datepicker(
             props.onOpen(!open);
           }
         }}
-        class="p-2 sm:p-4 text-sm md:text-xl flex justify-between border(2 black) rounded"
+        class={buttonClass}
       >
         <span>{df.format(date)}</span>
-        {chev}
+        {open
+          ? (theme.icons?.up || <span>&uarr;</span>)
+          : (theme.icons?.down || <span>&darr;</span>)}
       </button>
       <div
-        class={`absolute top-[3rem] sm:top-[4.5rem]${!open ? " hidden" : ""}`}
+        class={pickerClass}
         aria-expanded={open}
       >
-        <div class="mb-1 flex justify-between">
+        <div class="mb-5 flex justify-between">
           <button
             onClick={() => {
               if (typeof props.onMonthChange === "function") {
@@ -70,9 +101,9 @@ export function Datepicker(
               }
             }}
             disabled={!IS_BROWSER}
-            class="w-6 sm:w-[2rem]"
+            class="w-6 sm:w-[2rem] focus:outline-none"
           >
-            <Chevron svgProps={{ class: "m-auto text-sm" }} direction="left" />
+            {theme.icons?.left || <span>&larr;</span>}
           </button>
           <span class="flex-1 text-center self-center">
             {state.current.monthName}
@@ -85,9 +116,9 @@ export function Datepicker(
               }
             }}
             disabled={!IS_BROWSER}
-            class="w-6 sm:w-[2rem]"
+            class="w-6 sm:w-[2rem] focus:outline-none"
           >
-            <Chevron direction="right" />
+            {theme.icons?.right || <span>&rarr;</span>}
           </button>
         </div>
         <ul class="inline-grid grid-cols-7 grid-flow-row gap-[2px] sm:gap-1">
@@ -108,11 +139,7 @@ export function Datepicker(
                     props.onSelect(dt);
                   }
                 }}
-                class={`w-8 h-8 sm:w-[3rem] sm:h-[3rem] transition-all text-sm border(2 black) rounded hover:bg-black hover:text-white ${
-                  isSelected(d.day)
-                    ? "border(2 blue-400) bg-blue-400 text-white"
-                    : ""
-                }`}
+                class={dateClass(d.day)}
               >
                 {d.day}
               </button>
