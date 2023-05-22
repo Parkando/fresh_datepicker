@@ -1,6 +1,6 @@
 import { IS_BROWSER } from "$fresh/runtime.ts";
 import { JSX } from "preact";
-import { parseDate, State } from "@/core.ts";
+import { parseDate, State } from "./core.ts";
 
 export type YearAndMonth = {
   year: number;
