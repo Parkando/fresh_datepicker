@@ -79,7 +79,7 @@ export function Datepicker<T extends IconKey>(
           : icon("down", <span>&uarr;</span>)}
       </button>
       <div
-        class={`p-2 bg-white shadow-2xl absolute rounded top-[3.5rem]${
+        class={`p-2 z-10 bg-white shadow-2xl absolute rounded top-[3.5rem]${
           !open ? " hidden" : ""
         }`}
         aria-expanded={open}
