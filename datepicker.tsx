@@ -1,5 +1,6 @@
 import { IS_BROWSER } from "$fresh/runtime.ts";
 import { JSX } from "preact";
+import { tw } from "twind";
 import { parseDate, State } from "./core.ts";
 
 export type YearAndMonth = {
@@ -8,8 +9,9 @@ export type YearAndMonth = {
 };
 
 interface Theme {
-  primary: string;
-  accent: string;
+  buttonClass?: string;
+  primary?: string;
+  accent?: string;
   boxShadow?: string;
   borderRadius?: string;
   icons?: {
@@ -25,8 +27,8 @@ interface Props {
   locales?: string | string[] | undefined;
   open?: boolean;
   disabled?: boolean;
-  month?: YearAndMonth["month"];
-  year?: YearAndMonth["year"];
+  month?: number;
+  year?: number;
   onOpen?(open: boolean): void;
   onSelect?(date: Date): void;
   onMonthChange?(ym: YearAndMonth): void;
@@ -38,6 +40,8 @@ export function Datepicker(
     open,
     locales = "default",
     theme = {
+      buttonClass:
+        "flex items-center justify-between min-w-[270px] overflow-x-hidden focus:outline-none bg-white rounded shadow-2xl p-3 pl-6",
       primary: "blue-400",
       accent: "black",
       boxShadow: "shadow-md shadow-[rgb(164, 189, 185)]",
@@ -60,11 +64,6 @@ export function Datepicker(
       day === date.getDate();
   }
 
-  const buttonClass =
-    `flex items-center p-2 sm:p-4 text-sm md:text-xl flex justify-between focus:outline-none ${
-      theme.borderRadius || "rounded"
-    } ${theme.boxShadow || ""}`;
-
   const pickerClass = `p-2 absolute top-[3rem] sm:top-[4.5rem]${
     !open ? " hidden" : ""
   } ${theme.boxShadow || ""} ${theme.borderRadius || ""}`;
@@ -85,7 +84,7 @@ export function Datepicker(
             props.onOpen(!open);
           }
         }}
-        class={buttonClass}
+        class={theme.buttonClass}
       >
         <span>{df.format(date)}</span>
         {open
