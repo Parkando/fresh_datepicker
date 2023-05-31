@@ -16,6 +16,5 @@ Deno.test("core - parseDate", () => {
 });
 
 Deno.test("core - State - days in month", () => {
-  const state = new State(2023, 2);
-  assertEquals(state.days.length, 28);
+  assertEquals(new State(2023, 4).days.length, 31);
 });

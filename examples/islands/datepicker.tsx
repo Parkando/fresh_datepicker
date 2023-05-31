@@ -29,7 +29,10 @@ export default function DP() {
       }}
       locales={["sv-SE"]}
       date={date}
-      onMonthChange={setYearMonth}
+      onMonthChange={(ym) => {
+        console.log("ym", ym);
+        setYearMonth(ym);
+      }}
       month={ym.month}
       year={ym.year}
       onOpen={setOpen}

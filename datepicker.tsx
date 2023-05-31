@@ -42,7 +42,7 @@ export function Datepicker<T extends IconKey>(
   const date = parseDate(props.date);
 
   const month = props.month !== undefined ? props.month : date.getMonth();
-  const year = props.year !== undefined ? props.year : date.getFullYear();
+  const year = props.year !== undefined ? props.year : date.getUTCFullYear();
 
   const state = new State(year, month);
 
@@ -88,7 +88,9 @@ export function Datepicker<T extends IconKey>(
           <button
             onClick={() => {
               if (typeof props.onMonthChange === "function") {
-                props.onMonthChange(state.prev());
+                const prev = state.prev();
+
+                props.onMonthChange({ year: prev.year, month: prev.month });
               }
             }}
             disabled={!IS_BROWSER}

@@ -36,7 +36,11 @@ export class State {
   }
 
   next(): State {
-    this.currentDate.setMonth(this.currentDate.getMonth() + 1);
+    this.currentDate = new Date(
+      this.currentDate.getUTCFullYear(),
+      this.currentDate.getMonth() + 1,
+      1,
+    );
     return new State(
       this.currentDate.getFullYear(),
       this.currentDate.getMonth(),
@@ -44,7 +48,12 @@ export class State {
   }
 
   prev(): State {
-    this.currentDate.setMonth(this.currentDate.getMonth() - 1);
+    this.currentDate = new Date(
+      this.currentDate.getUTCFullYear(),
+      this.currentDate.getMonth() - 1,
+      1,
+    );
+
     return new State(
       this.currentDate.getFullYear(),
       this.currentDate.getMonth(),
@@ -64,7 +73,13 @@ export class State {
   }
 
   get days(): number[] {
-    const dt = new Date(this.year, this.month, 0);
+    const dt = new Date(
+      this.currentDate.getUTCFullYear(),
+      this.currentDate.getMonth() + 1,
+      0,
+    );
+
+    console.log(dt.getDate())
     return Array.from(Array(dt.getDate()).keys()).map((n) => n + 1);
   }
 }
