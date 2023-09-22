@@ -24,7 +24,7 @@ interface Props<T extends IconKey> {
   month?: number;
   year?: number;
   onOpen?(open: boolean): void;
-  onSelect?(date: Date): void;
+  onSelect?(date: string): void;
   onMonthChange?(ym: YearAndMonth): void;
   theme?: Theme<T>;
 }
@@ -124,10 +124,7 @@ export function Datepicker<T extends IconKey>(
                 disabled={!IS_BROWSER}
                 onClick={() => {
                   if (typeof props.onSelect === "function") {
-                    const dt = parseDate(
-                      `${state.year}-${state.month + 1}-${d}`,
-                    );
-                    props.onSelect(dt);
+                    props.onSelect(`${state.year}-${state.month + 1}-${d}`);
                   }
                 }}
                 class={`w-8 h-8 sm:w-[3rem] sm:h-[3rem] transition-all text-sm rounded focus:outline-none hover:bg-${
